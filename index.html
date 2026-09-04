@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Balvinder Singh — QA Engineer</title>
+<meta name="description" content="QA Automation Engineer. Portfolio, experience, and project history.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500&family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #12151B;
+    --panel: #171B22;
+    --ink: #ECEAE0;
+    --ink-soft: #9BA0A8;
+    --line: #272C34;
+    --pass: #4FBE86;
+    --pass-dim: #2E8560;
+    --wip: #E0A15D;
+    --wip-dim: #B8701F;
+    --maxw: 720px;
+  }
+  *{ box-sizing: border-box; }
+  html{ scroll-behavior: smooth; }
+  body{
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'Inter', sans-serif;
+    font-size: 16px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+  h1,h2,h3{
+    font-family: 'Fraunces', serif;
+    font-weight: 600;
+    margin: 0;
+    color: #fff;
+  }
+  a{ color: inherit; }
+  .wrap{ max-width: var(--maxw); margin: 0 auto; padding: 0 24px; }
+
+  /* ---------- topbar ---------- */
+  .topbar{
+    position: sticky; top: 0; z-index: 10;
+    background: rgba(18,21,27,0.9);
+    backdrop-filter: blur(6px);
+    border-bottom: 1px solid var(--line);
+  }
+  .topbar-inner{
+    max-width: var(--maxw);
+    margin: 0 auto;
+    padding: 12px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+  }
+  .brand{ display: flex; align-items: center; gap: 9px; white-space: nowrap; }
+  .brand-badge{
+    width: 22px; height: 22px; border-radius: 4px;
+    background: var(--pass-dim); color: #0E120F;
+    font-family: 'IBM Plex Mono', monospace; font-size: 10px; font-weight: 600;
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  }
+  .brand-text{ font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: var(--ink-soft); }
+  .nav{ display: flex; gap: 18px; font-family: 'IBM Plex Mono', monospace; font-size: 12.5px; }
+  .nav a{ text-decoration: none; color: var(--ink-soft); border-bottom: 1px solid transparent; padding-bottom: 2px; white-space: nowrap; }
+  .nav a:hover{ color: var(--ink); border-bottom-color: var(--ink); }
+  @media (max-width: 780px){ .nav{ display: none; } }
+  .topbar-cta{ display: flex; gap: 10px; flex-shrink: 0; }
+  .btn{
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12.5px;
+    text-decoration: none;
+    padding: 7px 14px;
+    border-radius: 4px;
+    white-space: nowrap;
+    display: inline-block;
+  }
+  .btn-ghost{ color: var(--ink); border: 1px solid var(--line); }
+  .btn-ghost:hover{ border-color: var(--ink-soft); }
+  .btn-primary{ background: var(--ink); color: var(--bg); border: 1px solid var(--ink); font-weight: 500; }
+  .btn-primary:hover{ opacity: 0.88; }
+
+  /* ---------- hero ---------- */
+  .hero{ padding: 44px 0 40px; }
+  .eyebrow{ font-family: 'IBM Plex Mono', monospace; font-size: 12.5px; color: var(--ink-soft); margin-bottom: 14px; }
+
+  /* terminal panel */
+  .term{ background: var(--panel); border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
+  .term-bar{
+    display: flex; align-items: center; padding: 10px 18px;
+    border-bottom: 1px solid var(--line);
+    font-family: 'IBM Plex Mono', monospace; font-size: 11.5px; color: var(--ink-soft);
+  }
+  .term-body{ padding: 22px 20px 24px; font-family: 'IBM Plex Mono', monospace; font-size: 13.5px; line-height: 1.75; }
+  .term-line{ color: var(--ink-soft); margin-top: 16px; opacity: 0; animation: fadeUp .5s ease forwards; }
+  .term-line:first-child{ margin-top: 0; }
+  .term-line .prompt{ color: var(--pass); margin-right: 9px; }
+  .term-out{ color: var(--ink); opacity: 0; animation: fadeUp .5s ease forwards; display: flex; gap: 9px; }
+  .term-out .mark{ flex-shrink: 0; width: 12px; }
+  .term-out.status-pass .mark{ color: var(--pass); }
+  .term-out.status-wip .mark{ color: var(--wip); }
+  .term-name{ font-family: 'Fraunces', serif; font-style: italic; font-size: 23px; font-weight: 600; color: #fff; opacity: 0; animation: fadeUp .5s ease forwards; }
+  .term-title{ color: var(--ink-soft); font-size: 13px; margin-top: 3px; opacity: 0; animation: fadeUp .5s ease forwards; }
+  .avail{ display: flex; align-items: center; gap: 9px; color: var(--pass); opacity: 0; animation: fadeUp .5s ease forwards; }
+  .live-dot{ width: 7px; height: 7px; border-radius: 50%; background: var(--pass); animation: pulse 1.8s ease-in-out infinite; flex-shrink: 0; }
+  @keyframes pulse{ 0%,100%{ box-shadow: 0 0 0 0 rgba(79,190,134,0.5); } 50%{ box-shadow: 0 0 0 5px rgba(79,190,134,0); } }
+  @keyframes fadeUp{ from{ opacity: 0; transform: translateY(4px); } to{ opacity: 1; transform: translateY(0); } }
+
+  .tagline-below{ font-family: 'Fraunces', serif; font-style: italic; font-size: 19px; color: var(--ink); margin-top: 26px; max-width: 54ch; line-height: 1.5; }
+  .hero-cta{ display: flex; gap: 10px; margin-top: 22px; flex-wrap: wrap; }
+  .btn-lg{ font-size: 13px; padding: 10px 18px; }
+
+  /* ---------- sections ---------- */
+  section{ padding: 40px 0; border-top: 1px solid var(--line); }
+  .section-head{ display: flex; align-items: baseline; gap: 12px; margin-bottom: 6px; }
+  .section-tag{ font-family: 'IBM Plex Mono', monospace; font-size: 12.5px; color: var(--ink-soft); opacity: 0.85; }
+  section h2{ font-size: 25px; }
+  .lede{ color: var(--ink-soft); max-width: 62ch; margin-top: 8px; }
+
+  /* ---------- about / stack / ai note ---------- */
+  .about-body{ margin-top: 16px; max-width: 64ch; color: var(--ink-soft); }
+  .about-body p{ margin: 0 0 14px; }
+  .about-body p:last-child{ margin-bottom: 0; }
+  .stack-label{ font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: var(--ink-soft); margin-top: 24px; margin-bottom: 10px; }
+  .stack-row{ display: flex; flex-wrap: wrap; gap: 8px; }
+  .stack-tag{ font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: var(--ink); border: 1px solid var(--line); padding: 4px 10px; border-radius: 3px; }
+
+  /* ---------- roadmap ---------- */
+  .roadmap{ counter-reset: step; margin-top: 20px; display: flex; flex-direction: column; }
+  .step{ display: grid; grid-template-columns: 36px 1fr; gap: 16px; padding: 13px 0; border-bottom: 1px solid var(--line); }
+  .step:last-child{ border-bottom: none; }
+  .step-num{ counter-increment: step; font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: var(--ink-soft); }
+  .step-num::before{ content: counter(step, decimal-leading-zero); }
+  .step-title{ font-weight: 600; font-size: 15.5px; font-family: 'Fraunces', serif; color: var(--ink); }
+  .step-note{ color: var(--ink-soft); font-size: 13.5px; margin-top: 2px; }
+  .step.current .step-title::after{
+    content: "current";
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    color: var(--wip);
+    border: 1px solid var(--wip-dim);
+    border-radius: 3px;
+    padding: 1px 7px;
+    margin-left: 10px;
+    vertical-align: middle;
+  }
+
+  /* ---------- projects ---------- */
+  .projects-grid{ display: grid; grid-template-columns: 1fr; gap: 0; margin-top: 20px; }
+  .card{ padding: 18px 0; border-bottom: 1px solid var(--line); }
+  .card:last-child{ border-bottom: none; }
+  .card-id{ font-family: 'IBM Plex Mono', monospace; font-size: 11.5px; color: var(--ink-soft); margin-bottom: 6px; }
+  .card h3{ font-size: 17.5px; margin-bottom: 6px; color: var(--ink); }
+  .card p{ color: var(--ink-soft); font-size: 14.5px; margin: 0 0 10px; max-width: 60ch; }
+  .tags{ display: flex; gap: 8px; flex-wrap: wrap; }
+  .tag{ font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--ink-soft); border: 1px solid var(--line); padding: 3px 9px; border-radius: 3px; }
+  .tag.tool{ color: var(--pass); border-color: var(--pass-dim); }
+
+  /* ---------- experience ---------- */
+  .exp-item{ display: grid; grid-template-columns: 130px 1fr; gap: 16px; padding: 16px 0; border-bottom: 1px solid var(--line); }
+  .exp-item:last-child{ border-bottom: none; }
+  @media (max-width: 560px){ .exp-item{ grid-template-columns: 1fr; gap: 6px; } }
+  .exp-period{ font-family: 'IBM Plex Mono', monospace; font-size: 12.5px; color: var(--ink-soft); }
+  .exp-role{ font-weight: 600; font-size: 16.5px; font-family: 'Fraunces', serif; color: var(--ink); }
+  .exp-org{ color: var(--ink-soft); font-size: 13.5px; margin-bottom: 8px; }
+  .exp-list{ margin: 0; padding-left: 18px; color: var(--ink-soft); }
+  .exp-list li{ font-size: 14.5px; margin-bottom: 4px; }
+
+  /* ---------- contact ---------- */
+  .contact-grid{ display: flex; flex-wrap: wrap; gap: 10px; margin-top: 18px; }
+  .contact-link{
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 13px;
+    text-decoration: none;
+    color: var(--ink);
+    border: 1px solid var(--line);
+    padding: 9px 16px;
+    border-radius: 4px;
+  }
+  .contact-link:hover{ border-color: var(--ink-soft); }
+
+  footer{ border-top: 1px solid var(--line); padding: 24px 0 40px; }
+  footer .wrap{ font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: var(--ink-soft); }
+
+  @media print{
+    :root{
+      --bg: #fff;
+      --panel: #fff;
+      --ink: #111;
+      --ink-soft: #444;
+      --line: #bbb;
+      --pass: #1E8E5A;
+      --pass-dim: #1E8E5A;
+      --wip: #B8701F;
+      --wip-dim: #B8701F;
+    }
+    body{ background: #fff; }
+    .topbar{ background: #fff; }
+    h1,h2,h3{ color: var(--ink); }
+    .topbar{ position: static; }
+    .topbar-cta, .nav{ display: none; }
+    .term{ border: 1px solid #000; }
+    .term-bar{ display: none; }
+    .term-line, .term-out, .term-name, .term-title, .avail{ opacity: 1 !important; animation: none !important; }
+    .term-name{ color: #111; }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    html{ scroll-behavior: auto; }
+    .live-dot{ animation: none; }
+    .term-line, .term-out, .term-name, .term-title, .avail{ animation: none !important; opacity: 1 !important; }
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-inner">
+    <div class="brand">
+      <div class="brand-badge" id="brand-badge"></div>
+      <div class="brand-text" id="brand-slot"></div>
+    </div>
+    <nav class="nav">
+      <a href="#about">About</a>
+      <a href="#projects">Projects</a>
+      <a href="#roadmap">Roadmap</a>
+      <a href="#experience">Experience</a>
+      <a href="#contact">Contact</a>
+    </nav>
+    <div class="topbar-cta" id="topbar-cta-slot"></div>
+  </div>
+</div>
+
+<div class="wrap">
+  <section class="hero" style="border-top:none;" id="hero-slot"></section>
+  <section id="about"></section>
+  <section id="roadmap"></section>
+  <section id="projects"></section>
+  <section id="experience"></section>
+  <section id="contact"></section>
+</div>
+
+<footer><div class="wrap" id="footer-slot"></div></footer>
+
+<script>
+/* ============================================================
+   EDIT EVERYTHING HERE. This is the only part of the file
+   you should ever need to touch. Every field below is plain
+   text or a plain list — save the file and reload the page
+   in your browser to see the change.
+   ============================================================ */
+const CONTENT = {
+
+  // ----- identity -----
+  brandText: "balvinder.qa",
+  name: "Balvinder Singh",
+  initials: "BS",
+  title: "QA Automation Engineer",
+  statusPill: "Open to QA Automation / SDET roles",
+  tagline: "I write test automation in Python with Playwright and Selenium, backed by 5+ years of hands-on QA experience at Rubico IT.",
+
+  // ----- quick facts shown as terminal status lines in the hero -----
+  facts: [
+    { type: "pass", label: "Python + Playwright" },
+    { type: "pass", label: "Selenium + pytest" },
+    { type: "pass", label: "Automation across multiple production apps" },
+    { type: "pass", label: "ISTQB CTFL certified" }
+  ],
+
+  // ----- contact links: leave any value as "" to hide that button -----
+  contact: {
+    email: "balvinder1002@gmail.com",
+    phone: "+919897400870",
+    linkedin: "https://www.linkedin.com/in/balvinder-singh-241760144/",
+    github: "https://github.com/balvinder1002",
+    resumeFile: "resume.pdf"   // put the actual PDF next to this index.html
+  },
+
+  // ----- about: a short paragraph, plus an AI-tools note, plus your core stack -----
+  aboutParagraphs: [
+    "I'm a QA Automation Engineer at Rubico IT in Dehradun, with an MCA and an ISTQB CTFL (Foundation Level) certification. Day to day, I write test automation in Python with Playwright and Selenium, use pytest for structure, and rely on SQL to validate data — across production apps in garment management, healthcare, video, and consumer spaces. I spent 5+ years testing these same systems by hand before automating them, so I know where they actually tend to break.",
+    "I also lean on AI day to day: Claude, to check live pages against Figma design specs through the Figma MCP integration, plus generating test cases and drafting bug reports and docs; ChatGPT for drafting test cases, bug reports, and script help."
+  ],
+  stack: ["Python", "Playwright", "Selenium", "pytest", "Git", "Postman", "SQL"],
+
+  // ----- automation roadmap: real sequence, in order -----
+  roadmap: [
+    { title: "Python", note: "Learned the core language and OOP basics.", current: false },
+    { title: "Playwright &amp; Selenium", note: "Written and run real automation scripts, not just tutorials.", current: false },
+    { title: "pytest", note: "Learning test structure, fixtures, and assertions.", current: false },
+    { title: "Page Object Model framework", note: "Building a full framework and applying it to a real project at Rubico.", current: false }
+  ],
+
+  // ----- projects: automated ones show tool tags; manual ones are marked plainly -----
+  projects: [
+    { id: "PRJ-01", name: "My Demoulin", desc: "A garment management platform. I wrote Playwright scripts covering the core workflows and regression.", tags: ["Playwright", "regression"], automated: true },
+    { id: "PRJ-02", name: "WeShare", desc: "A peer-to-peer rental marketplace, similar to Airbnb but for items, electronics, and vehicles. I wrote Playwright scripts covering core rental workflows.", tags: ["Playwright", "functional"], automated: true },
+    { id: "PRJ-03", name: "SparkIT", desc: "A video library platform. I wrote Selenium scripts covering content workflows and playback.", tags: ["Selenium", "functional"], automated: true },
+    { id: "PRJ-04", name: "Rise Nutrition", desc: "An athlete nutrition tracking app. I wrote Playwright scripts to validate tracking logic and data accuracy, backed by SQL checks.", tags: ["Playwright", "Python", "SQL"], automated: true },
+    { id: "PRJ-05", name: "Member Care Collaboration Network", desc: "A healthcare mobile app. I tested care-coordination workflows by hand — no automation on this one yet.", tags: ["mobile", "healthcare"], automated: false }
+  ],
+
+  // ----- experience: add more objects here for future jobs -----
+  experience: [
+    {
+      period: "2021 — Present",
+      role: "QA Engineer",
+      org: "Rubico IT, Dehradun",
+      context: "Agency environment, multiple concurrent US-based client projects, agile sprints",
+      bullets: [
+        "Write and run test automation in Python, Playwright, and Selenium across multiple live production apps.",
+        "Draw on 5+ years of hands-on QA experience with these systems to decide what gets automated first.",
+        "Write test cases and bug reports the dev team uses directly."
+      ]
+    }
+  ],
+
+  contactLede: "Open to QA Automation Engineer, SDET, and API Test Engineer roles, remote or based in Dehradun, NCR, Gurugram, or Noida.",
+  lastUpdated: "September 2026"
+};
+/* ============================================================
+   Nothing below this line needs editing — it just reads
+   CONTENT above and builds the page.
+   ============================================================ */
+
+function renderBrandAndCTA(){
+  document.getElementById('brand-badge').textContent = CONTENT.initials;
+  document.getElementById('brand-slot').textContent = CONTENT.brandText;
+  const cta = document.getElementById('topbar-cta-slot');
+  let html = '';
+  if (CONTENT.contact.email) html += `<a class="btn btn-ghost" href="mailto:${CONTENT.contact.email}">Email</a>`;
+  if (CONTENT.contact.resumeFile) html += `<a class="btn btn-primary" href="${CONTENT.contact.resumeFile}" download>Download Resume</a>`;
+  cta.innerHTML = html;
+}
+
+function renderHero(){
+  let delay = 0;
+  const step = () => { delay += 90; return delay; };
+  const factLines = CONTENT.facts.map(f => {
+    const mark = f.type === 'pass' ? '✓' : '●';
+    return `<div class="term-out status-${f.type}" style="animation-delay:${step()}ms;"><span class="mark">${mark}</span>${f.label}</div>`;
+  }).join('');
+
+  document.getElementById('hero-slot').innerHTML = `
+    <div class="eyebrow">${CONTENT.title}</div>
+    <div class="term">
+      <div class="term-bar">bash — qa-automation</div>
+      <div class="term-body">
+        <div class="term-line" style="animation-delay:${step()}ms;"><span class="prompt">$</span>whoami</div>
+        <div class="term-name" style="animation-delay:${step()}ms;">${CONTENT.name}</div>
+        <div class="term-title" style="animation-delay:${step()}ms;">${CONTENT.title}</div>
+        <div class="term-line" style="animation-delay:${step()}ms;"><span class="prompt">$</span>status --check</div>
+        ${factLines}
+        <div class="term-line" style="animation-delay:${step()}ms;"><span class="prompt">$</span>availability</div>
+        <div class="avail" style="animation-delay:${step()}ms;"><span class="live-dot"></span>${CONTENT.statusPill}</div>
+      </div>
+    </div>
+    <p class="tagline-below">${CONTENT.tagline}</p>
+    <div class="hero-cta">
+      ${CONTENT.contact.email ? `<a class="btn btn-ghost btn-lg" href="mailto:${CONTENT.contact.email}">Email</a>` : ''}
+      ${CONTENT.contact.resumeFile ? `<a class="btn btn-primary btn-lg" href="${CONTENT.contact.resumeFile}" download>Download Resume</a>` : ''}
+    </div>`;
+}
+
+function renderAbout(){
+  const paras = CONTENT.aboutParagraphs.map(p => `<p>${p}</p>`).join('');
+  const stack = CONTENT.stack.map(s => `<span class="stack-tag">${s}</span>`).join('');
+  document.getElementById('about').innerHTML = `
+    <div class="section-head"><span class="section-tag">// about</span><h2>About</h2></div>
+    <div class="about-body">${paras}</div>
+    <div class="stack-label">Core stack</div>
+    <div class="stack-row">${stack}</div>`;
+}
+
+function renderRoadmap(){
+  const steps = CONTENT.roadmap.map(s => `
+    <div class="step ${s.current ? 'current' : ''}">
+      <div class="step-num"></div>
+      <div>
+        <div class="step-title">${s.title}</div>
+        <div class="step-note">${s.note}</div>
+      </div>
+    </div>`).join('');
+  document.getElementById('roadmap').innerHTML = `
+    <div class="section-head"><span class="section-tag">// roadmap</span><h2>Automation roadmap</h2></div>
+    <p class="lede">The order I'm learning this in, one step at a time.</p>
+    <div class="roadmap">${steps}</div>`;
+}
+
+function renderProjects(){
+  const cards = CONTENT.projects.map(p => `
+    <div class="card">
+      <div class="card-id">${p.id}</div>
+      <h3>${p.name}</h3>
+      <p>${p.desc}</p>
+      <div class="tags">${p.tags.map(t => `<span class="tag${p.automated ? ' tool' : ''}">${t}</span>`).join('')}</div>
+    </div>`).join('');
+  document.getElementById('projects').innerHTML = `
+    <div class="section-head"><span class="section-tag">// projects</span><h2>Projects</h2></div>
+    <p class="lede">Production apps I've worked on at Rubico IT — automated where noted, tested by hand otherwise.</p>
+    <div class="projects-grid">${cards}</div>`;
+}
+
+function renderExperience(){
+  const items = CONTENT.experience.map(e => `
+    <div class="exp-item">
+      <div class="exp-period">${e.period}</div>
+      <div>
+        <div class="exp-role">${e.role}</div>
+        <div class="exp-org">${e.org}</div>
+        ${e.context ? `<div class="exp-org" style="font-family:'IBM Plex Mono', monospace; font-size:12px;">${e.context}</div>` : ''}
+        <ul class="exp-list">${e.bullets.map(b => `<li>${b}</li>`).join('')}</ul>
+      </div>
+    </div>`).join('');
+  document.getElementById('experience').innerHTML = `
+    <div class="section-head"><span class="section-tag">// experience</span><h2>Experience</h2></div>
+    ${items}`;
+}
+
+function renderContact(){
+  const c = CONTENT.contact;
+  let links = '';
+  if (c.email)      links += `<a class="contact-link" href="mailto:${c.email}">Email</a>`;
+  if (c.phone)       links += `<a class="contact-link" href="tel:${c.phone}">Phone</a>`;
+  if (c.linkedin)    links += `<a class="contact-link" href="${c.linkedin}" target="_blank" rel="noopener">LinkedIn</a>`;
+  if (c.github)      links += `<a class="contact-link" href="${c.github}" target="_blank" rel="noopener">GitHub</a>`;
+  if (c.resumeFile)  links += `<a class="contact-link" href="${c.resumeFile}" download>Download Resume</a>`;
+  document.getElementById('contact').innerHTML = `
+    <div class="section-head"><span class="section-tag">// contact</span><h2>Contact</h2></div>
+    <p class="lede">${CONTENT.contactLede}</p>
+    <div class="contact-grid">${links}</div>`;
+}
+
+function renderFooter(){
+  document.getElementById('footer-slot').textContent = `Built and maintained by hand. Last updated ${CONTENT.lastUpdated}.`;
+}
+
+renderBrandAndCTA();
+renderHero();
+renderAbout();
+renderRoadmap();
+renderProjects();
+renderExperience();
+renderContact();
+renderFooter();
+</script>
+
+</body>
+</html>
