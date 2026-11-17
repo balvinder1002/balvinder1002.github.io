@@ -195,3 +195,18 @@ animated.
 - **Locator lens:** 1.5px accent border, `--lens` wash, `saturate(180%)` (no blur: it
   smeared the text under it), tag in an accent pill with a green ✓ badge. The tag text comes from `data-loc` via CSS so it is never page text;
   `tests/test_site.py` runs each locator in Playwright strict mode.
+- **Testing section:** one glass panel holding the archify workflow diagram
+  (`how-its-tested.html`, source `design/how-its-tested.workflow.json`) in an iframe,
+  aspect 1200 / 830, 20px radius, plus a footer row with a glass "Open the diagram" button.
+  The frame loads `?embed=1&theme=<page theme>` only when the section nears the viewport
+  (about 800 KB file), and reloads if the system theme changes. Under 760px wide the frame
+  is hidden and the button opens the full viewer.
+- **Diagram glass skin:** archify has no theming hook, so `design/diagram-glass.css` is
+  injected into its output by `design/apply-glass-skin.py`. It maps archify's colour
+  variables to these tokens (one hue per step type: sky, green, violet, amber, rose,
+  slate), sets Inter, and makes the embedded view transparent so this panel and the orbs
+  show through; node masks stay opaque so arrows stay hidden behind nodes.
+  `test_diagram_text_contrast_on_glass` measures the diagram's SVG text against the real
+  composited background in both themes. Rebuild: edit the JSON, run archify
+  `finalize workflow ... --repo-root .`, then `python design/apply-glass-skin.py <archify
+  output> how-its-tested.html`.

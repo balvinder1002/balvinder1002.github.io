@@ -10,6 +10,10 @@ SITE_ROOT = Path(__file__).resolve().parent.parent
 
 
 class QuietHandler(http.server.SimpleHTTPRequestHandler):
+    # HTTP/1.1 keeps the connection open after a response; with HTTP/1.0 the Windows
+    # server sometimes reset the socket mid-transfer on the ~800 KB diagram file.
+    protocol_version = "HTTP/1.1"
+
     def log_message(self, *args):
         pass
 

@@ -12,7 +12,7 @@ from PIL import Image
 from playwright.sync_api import Page, expect
 
 SCREENSHOTS = Path(__file__).resolve().parent / "screenshots"
-SECTIONS = ["about", "projects", "roadmap", "experience", "contact"]
+SECTIONS = ["about", "projects", "roadmap", "experience", "testing", "contact"]
 
 
 # ---------- page basics ----------
@@ -138,6 +138,30 @@ def test_project_status_marks(home: Page):
     expect(manual).to_have_count(2)
 
 
+def test_testing_diagram_loads_and_has_a_full_screen_link(home: Page, site_url):
+    frame_el = home.locator("#testing iframe")
+    expect(frame_el).to_have_attribute("title", re.compile("how this site is tested", re.I))
+    assert frame_el.get_attribute("src") is None      # not fetched at page load
+    src = frame_el.get_attribute("data-src")
+    assert home.request.head(site_url + src).ok
+    link = home.get_by_role("link", name="Open the diagram")
+    expect(link).to_have_attribute("href", src)
+    # scrolled into view, the lazy frame loads the real diagram
+    home.locator("#testing").scroll_into_view_if_needed()
+    # embed view (diagram only) in the page's theme; Playwright's default scheme is light
+    expect(frame_el).to_have_attribute("src", f"{src}?embed=1&theme=light")
+    expect(home.frame_locator("#testing iframe").locator("svg text", has_text="Run pytest").first).to_be_visible(timeout=10000)
+
+
+def test_testing_diagram_is_a_button_on_phones(browser, site_url):
+    context = browser.new_context(viewport={"width": 375, "height": 800})
+    page = context.new_page()
+    page.goto(site_url)
+    expect(page.locator("#testing iframe")).to_be_hidden()
+    expect(page.get_by_role("link", name="Open the diagram")).to_be_visible()
+    context.close()
+
+
 def test_one_current_roadmap_step(home: Page):
     expect(home.locator("#roadmap .step.current")).to_have_count(1)
 
@@ -231,6 +255,58 @@ def luminance(rgb):
 def contrast(a, b):
     la, lb = luminance(a), luminance(b)
     return (max(la, lb) + 0.05) / (min(la, lb) + 0.05)
+
+
+@pytest.mark.parametrize("scheme", ["dark", "light"])
+def test_diagram_text_contrast_on_glass(browser, site_url, scheme: str):
+    """The embedded diagram is transparent over the glass panel: measure its SVG text
+    against what is really behind it, like the page's own contrast test."""
+    context = browser.new_context(
+        viewport={"width": 1440, "height": 900}, color_scheme=scheme, reduced_motion="reduce"
+    )
+    page = context.new_page()
+    page.goto(site_url)
+    page.locator("#testing").scroll_into_view_if_needed()
+    page.frame_locator("#testing iframe").locator("svg text", has_text="Run pytest").first.wait_for(timeout=10000)
+    page.wait_for_timeout(500)
+    frame = next(f for f in page.frames if "how-its-tested" in f.url)
+    assert f"theme={scheme}" in frame.url
+    off = page.locator("#testing iframe").evaluate(
+        "e => { const r = e.getBoundingClientRect(); return { x: r.left + scrollX, y: r.top + scrollY } }")
+    texts = frame.evaluate(FRAME_TEXT_JS)
+    assert len(texts) > 20, "diagram labels not found"
+    frame.add_style_tag(content="text,tspan{fill:transparent!important}*{color:transparent!important}")
+    shot = Image.open(io.BytesIO(page.screenshot(full_page=True))).convert("RGB")
+    context.close()
+
+    failures = []
+    for t in texts:
+        box = (int(off["x"] + t["x"]), int(off["y"] + t["y"]),
+               int(off["x"] + t["x"] + t["w"]), int(off["y"] + t["y"] + t["h"]))
+        pixels = list(shot.crop(box).get_flattened_data())
+        if not pixels:
+            continue
+        ratios = sorted(contrast(t["rgb"], p) for p in pixels)
+        worst = ratios[len(ratios) // 50]
+        if worst < 4.5:
+            failures.append(f'{worst:.2f} < 4.5 "{t["text"][:40]}"')
+    assert not failures, f"diagram, {scheme}:\n" + "\n".join(failures)
+
+
+FRAME_TEXT_JS = """() => {
+  const out = [];
+  for (const el of document.querySelectorAll('svg text')) {
+    if (!el.textContent.trim() || el.closest('[aria-hidden="true"], defs, title')) continue;
+    const r = el.getBoundingClientRect();
+    if (r.width < 2 || r.height < 2 || r.top < 0 || r.bottom > innerHeight || r.right > innerWidth) continue;
+    const cs = getComputedStyle(el);
+    if (cs.visibility === 'hidden' || cs.display === 'none' || parseFloat(cs.opacity) === 0) continue;
+    const m = (cs.fill || '').match(/[\\d.]+/g);
+    if (!m || cs.fill.startsWith('url')) continue;
+    out.push({ text: el.textContent.trim(), rgb: m.slice(0, 3).map(Number), x: r.left, y: r.top, w: r.width, h: r.height });
+  }
+  return out;
+}"""
 
 
 def test_buttons_meet_touch_size(home: Page):

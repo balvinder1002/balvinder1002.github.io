@@ -1,0 +1,88 @@
+/* Liquid glass skin for the archify diagram (how-its-tested.html).
+   Injected by design/apply-glass-skin.py after archify's own styles.
+   Tokens match MASTER.md. Each step type keeps its own hue so the legend still works. */
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap");
+
+html[data-theme="dark"]{
+  color-scheme: dark;
+  --bg: #0A0F1E;
+  --grid: rgba(255,255,255,0.06);
+  --canvas-dot: rgba(174,184,211,0.14);
+  --text: #EEF2FF;
+  --text-muted: #AEB8D3;
+  --text-dim: #7F89A6;
+  --text-faint: #8F9AB8;
+  --panel: rgba(14,20,40,0.42);
+  --panel-border: rgba(255,255,255,0.10);
+  --lane-fill: rgba(255,255,255,0.025);
+  --lane-stroke: rgba(255,255,255,0.12);
+  --arrow: #8F9AB8;
+  --arrow-emphasis: #7DD3FC;
+  --mask: #10172B;
+  --frontend-fill: rgba(125,211,252,0.12);   --frontend-stroke: #7DD3FC;
+  --backend-fill: rgba(110,231,160,0.12);    --backend-stroke: #6EE7A0;
+  --database-fill: rgba(167,139,250,0.14);   --database-stroke: #A78BFA;
+  --cloud-fill: rgba(251,191,36,0.11);       --cloud-stroke: #FBBF24;
+  --security-fill: rgba(251,113,133,0.12);   --security-stroke: #FB7185;
+  --messagebus-fill: rgba(251,146,60,0.11);  --messagebus-stroke: #FB923C;
+  --external-fill: rgba(255,255,255,0.06);   --external-stroke: #AEB8D3;
+  --toolbar-bg: rgba(14,20,40,0.62);
+  --toolbar-border: rgba(255,255,255,0.14);
+  --toolbar-text: #EEF2FF;
+  --toolbar-hover: rgba(255,255,255,0.09);
+  --toolbar-menu-bg: #10172B;
+}
+html[data-theme="light"]{
+  color-scheme: light;
+  --bg: #E8EDF7;
+  --grid: rgba(14,20,40,0.06);
+  --canvas-dot: rgba(14,20,40,0.10);
+  --text: #0E1428;
+  --text-muted: #3F4862;
+  --text-dim: #6B7591;
+  --text-faint: #4F5874;
+  --panel: rgba(255,255,255,0.62);
+  --panel-border: rgba(14,20,40,0.09);
+  --lane-fill: rgba(255,255,255,0.35);
+  --lane-stroke: rgba(14,20,40,0.12);
+  --arrow: #5A6480;
+  --arrow-emphasis: #0369A1;
+  --mask: #F7F9FD;
+  --frontend-fill: rgba(3,105,161,0.08);     --frontend-stroke: #0369A1;
+  --backend-fill: rgba(22,101,52,0.08);      --backend-stroke: #166534;
+  --database-fill: rgba(109,40,217,0.08);    --database-stroke: #6D28D9;
+  --cloud-fill: rgba(180,83,9,0.08);         --cloud-stroke: #B45309;
+  --security-fill: rgba(190,18,60,0.08);     --security-stroke: #BE123C;
+  --messagebus-fill: rgba(194,65,12,0.08);   --messagebus-stroke: #C2410C;
+  --external-fill: rgba(14,20,40,0.04);      --external-stroke: #3F4862;
+  --toolbar-bg: rgba(255,255,255,0.70);
+  --toolbar-border: rgba(14,20,40,0.12);
+  --toolbar-text: #0E1428;
+  --toolbar-hover: rgba(255,255,255,0.90);
+  --toolbar-menu-bg: #FFFFFF;
+}
+
+/* Fonts: Inter for the viewer's text, JetBrains Mono for diagram labels (as on the site). */
+body{ font-family: 'Inter', 'Segoe UI', system-ui, sans-serif !important; }
+
+/* Full-screen page: glass panel over the site's ground. */
+html:not([data-embed="true"]) .diagram-container{
+  border-radius: 28px;
+  -webkit-backdrop-filter: blur(24px) saturate(170%);
+  backdrop-filter: blur(24px) saturate(170%);
+}
+.diagram-nav, .toolbar, [class*="toolbar"]{
+  -webkit-backdrop-filter: blur(16px) saturate(170%);
+  backdrop-filter: blur(16px) saturate(170%);
+}
+
+/* Embedded in the portfolio: no background of its own, so the page's glass panel
+   and colour orbs show through. The node mask stays opaque so arrows stay hidden
+   behind node fills. */
+html[data-embed="true"], html[data-embed="true"] body{ background: transparent !important; }
+html[data-embed="true"] .diagram-container{
+  background: radial-gradient(circle at 1px 1px, var(--canvas-dot) 1px, transparent 1.4px) 0 0 / 20px 20px !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+html[data-embed="true"] rect.c-bg-rect{ fill: transparent !important; }

@@ -1,0 +1,324 @@
+{
+  "schema_version": 2,
+  "diagram_type": "workflow",
+  "meta": {
+    "title": "How this site is tested",
+    "locale": "en",
+    "quality_profile": "showcase",
+    "output": ".archify/workflow-site-tests-20261117-234916/how-its-tested.html",
+    "repository": {
+      "url": "https://github.com/balvinder1002/balvinder1002.github.io.git",
+      "provider": "github",
+      "link_mode": "web",
+      "revision": "83803325cb2b646467eb41b0716312f56cf321c5"
+    },
+    "legend": {
+      "entries": {
+        "frontend": {
+          "label": "Page or site"
+        },
+        "backend": {
+          "label": "Local test run"
+        },
+        "security": {
+          "label": "Check or failure"
+        },
+        "database": {
+          "label": "Saved output"
+        },
+        "cloud": {
+          "label": "GitHub runner or Pages"
+        },
+        "external": {
+          "label": "Git"
+        }
+      }
+    }
+  },
+  "lanes": [
+    {
+      "id": "local",
+      "label": "My PC"
+    },
+    {
+      "id": "ci",
+      "label": "GitHub Actions: Site tests"
+    },
+    {
+      "id": "pages",
+      "label": "GitHub Pages"
+    },
+    {
+      "id": "failure",
+      "label": "Red build",
+      "variant": "exception"
+    }
+  ],
+  "phases": [
+    {
+      "id": "change",
+      "label": "Change + check locally",
+      "fromCol": 0,
+      "toCol": 2
+    },
+    {
+      "id": "verify",
+      "label": "Verify on a clean runner",
+      "fromCol": 3,
+      "toCol": 5,
+      "variant": "emphasis"
+    }
+  ],
+  "groups": [
+    {
+      "id": "blocking",
+      "label": "Every push to main",
+      "lane": "ci",
+      "fromCol": 3,
+      "toCol": 5,
+      "variant": "emphasis"
+    }
+  ],
+  "mainPath": [
+    "edit",
+    "local_tests",
+    "push",
+    "setup",
+    "suite",
+    "artifact"
+  ],
+  "nodes": [
+    {
+      "id": "edit",
+      "lane": "local",
+      "col": 0,
+      "type": "frontend",
+      "label": "Edit the page",
+      "sublabel": "CONTENT block in index.html",
+      "sources": [
+        {
+          "path": "index.html",
+          "line": 339,
+          "end_line": 419,
+          "label": "CONTENT block"
+        }
+      ]
+    },
+    {
+      "id": "local_tests",
+      "lane": "local",
+      "col": 1,
+      "type": "backend",
+      "label": "Run pytest",
+      "sublabel": "local .venv, Chromium",
+      "tag": "fix until green",
+      "sources": [
+        {
+          "path": "pytest.ini",
+          "line": 1,
+          "end_line": 3
+        },
+        {
+          "path": "tests/conftest.py",
+          "line": 17,
+          "end_line": 35,
+          "label": "local server fixture"
+        }
+      ]
+    },
+    {
+      "id": "push",
+      "lane": "local",
+      "col": 2,
+      "type": "external",
+      "label": "git push",
+      "sublabel": "to main",
+      "sources": [
+        {
+          "path": ".github/workflows/tests.yml",
+          "line": 3,
+          "end_line": 6,
+          "label": "triggers"
+        }
+      ]
+    },
+    {
+      "id": "setup",
+      "lane": "ci",
+      "col": 3,
+      "type": "cloud",
+      "label": "Clean runner",
+      "sublabel": "Python 3.13 + Chromium",
+      "sources": [
+        {
+          "path": ".github/workflows/tests.yml",
+          "line": 10,
+          "end_line": 17
+        }
+      ]
+    },
+    {
+      "id": "suite",
+      "lane": "ci",
+      "col": 4,
+      "type": "security",
+      "label": "pytest -v",
+      "sublabel": "Playwright checks",
+      "tag": "blocking",
+      "sources": [
+        {
+          "path": ".github/workflows/tests.yml",
+          "line": 18,
+          "end_line": 18
+        },
+        {
+          "path": "tests/test_site.py",
+          "line": 39,
+          "end_line": 92,
+          "label": "locator lens checks"
+        },
+        {
+          "path": "tests/test_site.py",
+          "line": 173,
+          "end_line": 233,
+          "label": "contrast on glass"
+        }
+      ]
+    },
+    {
+      "id": "artifact",
+      "lane": "ci",
+      "col": 5,
+      "type": "database",
+      "label": "Screenshots",
+      "sublabel": "375 / 900 / 1440 px",
+      "sources": [
+        {
+          "path": ".github/workflows/tests.yml",
+          "line": 19,
+          "end_line": 23
+        },
+        {
+          "path": "tests/test_site.py",
+          "line": 158,
+          "end_line": 171
+        }
+      ]
+    },
+    {
+      "id": "deploy",
+      "lane": "pages",
+      "col": 3,
+      "type": "cloud",
+      "label": "Pages build",
+      "sublabel": "deploy from main"
+    },
+    {
+      "id": "live",
+      "lane": "pages",
+      "col": 4,
+      "type": "frontend",
+      "label": "Live site",
+      "sublabel": "balvinder1002.github.io"
+    },
+    {
+      "id": "annotations",
+      "lane": "failure",
+      "col": 4,
+      "type": "security",
+      "label": "Failure notes",
+      "sublabel": "test name + reason",
+      "sources": [
+        {
+          "path": "requirements-dev.txt",
+          "line": 4,
+          "end_line": 4,
+          "label": "annotate-failures plugin"
+        }
+      ]
+    }
+  ],
+  "edges": [
+    {
+      "id": "edit-test",
+      "from": "edit",
+      "to": "local_tests"
+    },
+    {
+      "id": "test-push",
+      "from": "local_tests",
+      "to": "push",
+      "label": "all pass",
+      "variant": "emphasis"
+    },
+    {
+      "id": "push-ci",
+      "from": "push",
+      "to": "setup",
+      "label": "workflow",
+      "variant": "emphasis"
+    },
+    {
+      "id": "push-pages",
+      "from": "push",
+      "to": "deploy",
+      "label": "deploy",
+      "role": "branch"
+    },
+    {
+      "id": "setup-suite",
+      "from": "setup",
+      "to": "suite"
+    },
+    {
+      "id": "suite-artifact",
+      "from": "suite",
+      "to": "artifact",
+      "label": "always",
+      "variant": "dashed"
+    },
+    {
+      "id": "deploy-live",
+      "from": "deploy",
+      "to": "live"
+    },
+    {
+      "id": "suite-red",
+      "from": "suite",
+      "to": "annotations",
+      "label": "red",
+      "variant": "security",
+      "role": "error"
+    },
+    {
+      "id": "red-fix",
+      "from": "annotations",
+      "to": "edit",
+      "label": "read + fix",
+      "variant": "dashed",
+      "role": "return"
+    }
+  ],
+  "cards": [
+    {
+      "dot": "emerald",
+      "title": "What the suite checks",
+      "items": [
+        "Every hero locator label resolves to exactly one element (strict mode)",
+        "The lens visits each target in order, and skips for reduced motion and deep links",
+        "Nav, links, contact, project statuses and the roadmap",
+        "Text contrast measured from real screenshots, both themes, phone and desktop",
+        "No sideways scroll at 375, 900 and 1440 px; 44 px touch targets"
+      ]
+    },
+    {
+      "dot": "amber",
+      "title": "Read this right",
+      "items": [
+        "Pages deploys in parallel with the tests: a red run does not block the deploy, it flags the change to fix",
+        "The Pages build is a GitHub repository setting, so it has no file in the repo to cite",
+        "The first run on GitHub caught a real race in the deep-link check that never showed locally"
+      ]
+    }
+  ]
+}

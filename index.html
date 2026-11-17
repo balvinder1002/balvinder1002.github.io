@@ -245,6 +245,15 @@
   .exp-item h3{ font-size: 30px; line-height: 1.1; }
   .exp-item ul{ margin: 8px 0 0; padding-left: 20px; display: flex; flex-direction: column; gap: 10px; }
 
+  /* testing */
+  .diagram{ padding: 10px; display: flex; flex-direction: column; gap: 10px; }
+  .diagram iframe{ display: block; width: 100%; aspect-ratio: 1200 / 830; border: 0; border-radius: 20px; background: transparent; color-scheme: normal; }
+  .diagram-foot{ display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; padding: 6px 12px 8px; }
+  @container page (max-width: 760px){
+    .diagram iframe{ display: none; }   /* too small to read on a phone: the button opens it full screen */
+    .diagram{ padding: 20px; }
+  }
+
   /* contact */
   .contact{ margin-top: 112px; padding: clamp(32px, 6cqi, 80px); border-radius: 36px; display: flex; flex-direction: column; gap: 32px; }
   .contact h2{ font-size: clamp(44px, 6.4cqi, 88px); line-height: 1; letter-spacing: -0.03em; max-width: 15ch; }
@@ -310,6 +319,7 @@
         <a class="navlink" href="#projects">Projects</a>
         <a class="navlink" href="#roadmap">Roadmap</a>
         <a class="navlink" href="#experience">Experience</a>
+        <a class="navlink" href="#testing">Testing</a>
         <a class="navlink" href="#contact">Contact</a>
       </nav>
       <div id="topbar-cta-slot"></div>
@@ -322,6 +332,7 @@
     <section class="section wrap" id="projects"></section>
     <section class="section wrap" id="roadmap"></section>
     <section class="section wrap" id="experience"></section>
+    <section class="section wrap" id="testing"></section>
   </main>
   <div class="wrap">
     <section class="contact glass" id="contact"></section>
@@ -412,6 +423,10 @@ const CONTENT = {
       ]
     }
   ],
+
+  // ----- how this site is tested: the diagram file is made with archify from design/how-its-tested.workflow.json -----
+  testingLede: "This page has its own Playwright test suite. It runs on my PC before every push, then again on a clean GitHub runner, and a red run tells me exactly which check failed.",
+  testingDiagram: "how-its-tested.html",
 
   contactHeadline: "Have an app that keeps breaking? Let's talk.",
   contactLede: "Open to QA Automation Engineer, SDET and API Test Engineer roles, remote or based in Delhi NCR, Dehradun, Chandigarh or Mohali.",
@@ -525,6 +540,36 @@ function renderExperience(){
     </div>`;
 }
 
+function renderTesting(){
+  if (!CONTENT.testingDiagram) { $('testing').remove(); document.querySelector('a[href="#testing"]')?.remove(); return; }
+  $('testing').innerHTML = `
+    <div class="head-row">
+      <h2>How this site is tested</h2>
+      <p>${CONTENT.testingLede}</p>
+    </div>
+    <div class="diagram glass">
+      <iframe data-src="${CONTENT.testingDiagram}" title="Diagram: how this site is tested, from a local edit to the live site"></iframe>
+      <div class="diagram-foot">
+        <span class="mono soft">Open the diagram to zoom in and trace a route through it.</span>
+        <a class="btn btn-glass glass pill btn-sm" href="${CONTENT.testingDiagram}" target="_blank" rel="noopener">Open the diagram</a>
+      </div>
+    </div>`;
+  // The diagram file is about 800 KB: fetch it only when the section is about to scroll into view
+  // and the frame is shown (it is hidden on phones). loading="lazy" alone fetched it on page load.
+  // ?embed=1 shows only the diagram, transparent over this glass panel (design/diagram-glass.css).
+  // The theme is passed in so the frame always matches the page, and follows system changes.
+  const frame = $('testing').querySelector('iframe');
+  const scheme = matchMedia('(prefers-color-scheme: light)');
+  const url = () => `${frame.dataset.src}?embed=1&theme=${scheme.matches ? 'light' : 'dark'}`;
+  const load = () => { if (!frame.src && frame.offsetParent) frame.src = url(); };
+  scheme.addEventListener?.('change', () => { if (frame.src) frame.src = url(); });
+  if ('IntersectionObserver' in window){
+    new IntersectionObserver((entries, io) => {
+      if (entries.some(e => e.isIntersecting)) { load(); if (frame.src) io.disconnect(); }
+    }, { rootMargin: '600px 0px' }).observe($('testing'));
+  } else load();
+}
+
 function renderContact(){
   const c = CONTENT.contact;
   const tile = (k, href, v, ext) => `<a class="tile" href="${href}"${ext ? ' target="_blank" rel="noopener"' : ''}><span class="mono soft">${k}</span><span class="v">${v}</span></a>`;
@@ -619,6 +664,7 @@ renderAbout();
 renderProjects();
 renderRoadmap();
 renderExperience();
+renderTesting();
 renderContact();
 checkResume();
 if (document.fonts && document.fonts.ready) document.fonts.ready.then(runLens); else runLens();
