@@ -553,8 +553,11 @@ async function runLens(){
   const skip = () => { root.dataset.lens = 'skipped'; };
   try { if (matchMedia('(prefers-reduced-motion: reduce)').matches) return skip(); } catch (e) {}
   if (!lens || !lens.animate) return skip();
+  // Deep link (e.g. #projects): skip. Check the hash, not the scroll position: the browser's
+  // jump to the anchor can land after fonts are ready (it did on the CI runner).
+  if (location.hash && location.hash !== '#top') return skip();
   const h = hero.getBoundingClientRect();
-  if (h.bottom < 0 || h.top > innerHeight) return skip();   // deep link below the hero
+  if (h.bottom < 0 || h.top > innerHeight) return skip();
 
   const targets = [...hero.querySelectorAll('.target')];
   const loc = lens.querySelector('.lens-loc'), ok = lens.querySelector('.lens-ok');
