@@ -1,0 +1,401 @@
+{
+  "meta": {
+    "name": "Liquid Glass Portfolio",
+    "description": "Original liquid-glass look for a QA automation engineer's portfolio: frosted glass panels with bright refractive edges over drifting colour orbs, with one Playwright locator lens as the signature moment. Dark default, matching light theme.",
+    "source_references": [
+      "Portfolio Liquid Glass Mock-up, project/Main.dc.html (https://claude.ai/artifact/V2j4aeSbheQHWh8Robq9Av)",
+      "Content and tests from index.html and tests/test_site.py in this repo"
+    ],
+    "created_at": "2026-11-17"
+  },
+  "design_system": {
+    "color": {
+      "palette_type": "analogous (cool blue, violet, teal) on a deep navy ground",
+      "primary": {
+        "hex": "#7DD3FC",
+        "role": "The one accent: primary button fill, locator lens border and tag, focus rings, hover title colour, 'in progress' status. Light theme: #0369A1."
+      },
+      "secondary": {
+        "hex": "#8B5CF6",
+        "role": "Atmosphere only: violet orb behind glass (rgba(139,92,246,0.40) dark, rgba(167,139,250,0.45) light). Never on text or controls."
+      },
+      "accent": {
+        "hex": "#2DD4BF",
+        "role": "Atmosphere only: teal orb (rgba(45,212,191,0.32) dark, rgba(94,234,212,0.40) light). A third orb uses sky #38BDF8. Never on text or controls."
+      },
+      "neutral": {
+        "scale": [
+          "#EEF2FF",
+          "#AEB8D3",
+          "#3F4862",
+          "#0E1428",
+          "#0A0F1E"
+        ],
+        "usage": "Dark theme (default): ink #EEF2FF, soft text #AEB8D3, ground #0A0F1E. Light theme: ground #E8EDF7, ink #0E1428, soft #3F4862. Hairlines: rgba(255,255,255,0.10) dark, rgba(14,20,40,0.09) light."
+      },
+      "semantic": {
+        "success": "#6EE7A0 dark / #166534 light: 'Automated' and 'Done' only, with a 12% / 10% tinted pill behind 'Automated'",
+        "warning": "not used",
+        "error": "not used",
+        "info": "uses primary #7DD3FC / #0369A1 for 'In progress'"
+      },
+      "surface": {
+        "background": "#0A0F1E (light: #E8EDF7)",
+        "card": "glass: rgba(14,20,40,0.42) navy-tinted + backdrop blur 24px, saturate 170% (light: rgba(255,255,255,0.62))",
+        "elevated": "glass-strong: rgba(255,255,255,0.07) (light: 0.75), used for hover fills, chips and status pills"
+      },
+      "contrast_strategy": "Light text on a dark ground; dark glass is navy-tinted so a bright orb behind a panel cannot wash out its text. Every text node is measured against the composited screenshot (both themes, 375 and 1440px) by test_text_contrast_on_glass: 4.5:1, or 3:1 at 24px+.",
+      "contrast_targets": "All text at least 4.5:1 against the composited glass over the brightest orb; checked by an automated test."
+    },
+    "typography": {
+      "type_scale": {
+        "display": {
+          "size": "clamp(56px, 9.2cqi, 132px)",
+          "weight": 600,
+          "line_height": 0.92,
+          "tracking": "-0.035em"
+        },
+        "heading_1": {
+          "size": "clamp(44px, 6.4cqi, 88px)",
+          "weight": 600,
+          "line_height": 1.0,
+          "tracking": "-0.03em"
+        },
+        "heading_2": {
+          "size": "48px (36px under 600px)",
+          "weight": 600,
+          "line_height": 1.05,
+          "tracking": "-0.02em"
+        },
+        "heading_3": {
+          "size": "26px (project), 22px (roadmap), 30px (role)",
+          "weight": 600,
+          "line_height": 1.15,
+          "tracking": "-0.02em"
+        },
+        "body": {
+          "size": "16px; lead 20px; hero pitch clamp(19px, 1.9cqi, 24px)",
+          "weight": 400,
+          "line_height": 1.6,
+          "tracking": "0"
+        },
+        "body_small": {
+          "size": "15px",
+          "weight": 400,
+          "line_height": 1.55,
+          "tracking": "0"
+        },
+        "caption": {
+          "size": "12.5px mono",
+          "weight": 400,
+          "line_height": 1.5,
+          "tracking": "0"
+        },
+        "overline": {
+          "size": "11.5px mono (lens tag)",
+          "weight": 400,
+          "line_height": 1.4,
+          "tracking": "0"
+        }
+      },
+      "font_families": {
+        "heading": "'Inter Tight', 'Arial Narrow', system-ui, sans-serif",
+        "body": "'Inter', 'Segoe UI', system-ui, sans-serif",
+        "mono": "'JetBrains Mono', ui-monospace, Consolas, monospace"
+      },
+      "font_style_notes": "Neo-grotesque sans throughout; tight negative tracking on big headings, normal on body. Mono for every label, chip, status and the locator tags, which carries the QA/code identity. Fluid sizes use container query units (cqi) so the page scales by its own width."
+    },
+    "spacing": {
+      "base_unit": "8px",
+      "scale": [
+        4,
+        8,
+        12,
+        16,
+        24,
+        28,
+        32,
+        40,
+        48,
+        56,
+        80,
+        112
+      ],
+      "content_density": "spacious",
+      "section_rhythm": "Even 112px between sections; 32px from a section heading row to its content; 40-56px inside the hero between name, pitch and actions."
+    },
+    "layout": {
+      "grid_system": "Flex-wrap rows and auto-fit CSS grids: repeat(auto-fit, minmax(min(Npx, 100%), 1fr)); no fixed column count, so every row collapses to one column on a phone.",
+      "max_content_width": "1200px",
+      "columns": "Section header: label column (flex 1 1 240px) + content column (flex 999 1 560px). Projects row: 3 auto-fit columns of min 230px. Roadmap: auto-fit min 300px (3 across on desktop). Contact: auto-fit min 240px.",
+      "gutter": "24px page padding; 40-48px between label and content columns; 12-16px between cards",
+      "breakpoints": "No fixed breakpoints: layouts reflow by available width (verified at 375, 900 and 1440px by the test suite).",
+      "alignment_tendency": "asymmetric (wide content column beside a narrow heading column; hero name left, facts card bottom-right)"
+    },
+    "shape": {
+      "border_radius": {
+        "small": "20px (locator lens)",
+        "medium": "22-24px (rows, roadmap cards, note card)",
+        "large": "28px glass panels; 36px contact panel",
+        "pill": "999px (nav bar, buttons, chips, status tags)"
+      },
+      "border_usage": "No solid borders on glass: a 1px gradient edge drawn with a masked ::before (bright at top-left and bottom-right, clear in the middle). Chips get a 1px hairline.",
+      "divider_style": "1px hairline rgba(255,255,255,0.10) between facts rows only; project rows separate by spacing and hover fill, not lines."
+    },
+    "elevation": {
+      "shadow_style": "soft diffused",
+      "levels": {
+        "low": "none (rows and links inside a panel)",
+        "medium": "0 24px 60px rgba(0,0,0,0.35) on glass panels (light: 0 20px 50px rgba(30,45,90,0.14))",
+        "high": "primary button glow 0 8px 24px rgba(125,211,252,0.35); current roadmap card adds a 1.5px accent ring"
+      },
+      "depth_cues": "blur/glass: backdrop blur and saturation over coloured orbs, a top sheen gradient, gradient edges, soft shadow"
+    },
+    "iconography": {
+      "style": "almost none: status marks are text glyphs (✓ ○) and a small green status dot",
+      "stroke_weight": "n/a; if icons are added use 1.5px stroke inline SVG",
+      "size_scale": "8px dot, 34px monogram badge",
+      "preferred_set": "none; inline stroke SVG only if needed, never emoji"
+    },
+    "motion": {
+      "easing": "Signature cubic-bezier(0.2,0,0,1) for ~80% (hover, focus, press release); enter cubic-bezier(0.05,0.7,0.1,1); move cubic-bezier(0.4,0,0.2,1); exit cubic-bezier(0.3,0,1,1). No overshoot anywhere (glass material).",
+      "duration_scale": {
+        "micro": "90ms (hover in, press down)",
+        "normal": "180ms (hover out, press release, focus ring); 240ms lens enter",
+        "macro": "420ms lens travel; ~3.2s whole lens sequence once; 1600ms orb settle"
+      },
+      "entrance_pattern": "Content visible at load. One lens appears on the name (opacity 0-1, scale 1.04-1, 240ms enter) and travels to the pitch and the stack (420ms move, 500ms holds), confirming each stop with a green check pop (scale 0.6-1, 150ms). Hero orbs settle once (opacity 0-1, scale 0.92-1, 1600ms, 150ms apart).",
+      "exit_pattern": "Lens fades out and settles to scale 0.98 in 200ms with the exit curve. Hover states leave in 180ms (slower than the 90ms entry).",
+      "philosophy": "minimal functional, corporate precision, one orchestrated signature moment; only clickable things move",
+      "platform": "Phones under 600px: lens times x0.8. Hover effects only under @media (hover: hover); touch gets press feedback under 100ms.",
+      "reduced_motion": "No lens pass (hidden), static orbs, no lift/scale/offset, colour and fill changes instant, scroll-behavior auto.",
+      "performance": "Animate transform and opacity only, plus hover fills; the single lens box is the only element that resizes. Never animate box-shadow, blur or border-radius. No continuous orb drift: moving colour behind backdrop-filter forces every panel to re-blur each frame, and motion over 5s would need a pause control (WCAG 2.2.2)."
+    },
+    "components": {
+      "button_style": "Pills, min height 48px (44px in the nav). Primary: accent fill, dark text, accent glow; lifts 1px on hover, presses 1px on active. Secondary: glass pill with ink text.",
+      "input_style": "none on the site; if added: glass-strong fill, pill or 16px radius, accent focus ring",
+      "card_style": "Glass panel: 6% white, blur 24px saturate 170%, gradient 1px edge, top sheen, 28px radius, soft shadow.",
+      "navigation_pattern": "Floating glass pill bar at the top: monogram + name left, section links as pill hovers, resume button right; wraps on phones (not sticky).",
+      "modal_style": "none",
+      "list_style": "Projects: rows inside one glass panel, hover fills glass-strong and turns the title accent. Roadmap: grid of glass cards with mono step number and status. Facts: label/value rows with hairlines.",
+      "component_notes": "Status tags are mono pills: Automated (green on green tint), Manual (soft on glass-strong). Contact links are glass tiles with a mono label over the value. Focus: 2px accent outline, 3px offset, on every link and button."
+    }
+  },
+  "design_style": {
+    "aesthetic": {
+      "mood": [
+        "calm",
+        "modern",
+        "precise",
+        "luminous"
+      ],
+      "visual_metaphor": "Looking at the page through a test inspector's lens: frosted glass layers, with one lens that snaps onto elements like a Playwright locator.",
+      "era_influence": "Mid-2020s translucent OS and product UI",
+      "genre": "personal portfolio, tech-forward",
+      "personality_traits": [
+        "confident",
+        "meticulous",
+        "approachable"
+      ],
+      "adjectives": [
+        "frosted",
+        "airy",
+        "glowing",
+        "clean",
+        "layered"
+      ]
+    },
+    "visual_language": {
+      "complexity": "moderate",
+      "ornamentation": "subtle accents",
+      "whitespace_usage": "generous; whitespace separates sections instead of lines",
+      "visual_weight_distribution": "top-heavy: the huge name and hero carry the weight; sections below are quieter panels",
+      "focal_strategy": "single hero element (name with locator lens), then progressive panels",
+      "contrast_level": "high for text, low for surfaces",
+      "texture_usage": "blurred colour orbs seen through glass; no noise or grain"
+    },
+    "composition": {
+      "hierarchy_method": "scale contrast plus typographic hierarchy (display name, 48px section heads, mono labels)",
+      "balance_type": "asymmetric",
+      "flow_direction": "top to bottom, left-aligned reading line",
+      "grouping_strategy": "each section's content sits in or on glass panels; related items share one panel",
+      "negative_space_role": "lets the orbs breathe between panels so the glass reads as glass"
+    },
+    "imagery": {
+      "photo_treatment": "none",
+      "illustration_style": "none",
+      "graphic_elements": "colour orbs, gradient glass edges, locator lens and its mono tag",
+      "pattern_usage": "none",
+      "image_shape": "circles (orbs, monogram), pills, rounded rectangles"
+    },
+    "interaction_feel": {
+      "feedback_style": "Primary pill lifts 1px and its glow layer brightens; press scales 0.97 (contact tiles 0.99); fills fade glass to glass-strong; focus ring offset animates 6px to 3px",
+      "hover_behavior": "90ms in, 180ms out; only clickable elements react; rows fill and turn the title accent; tiles lift 2px; panels, cards and chips never react",
+      "transition_personality": "snappy in, smooth glide out",
+      "loading_style": "no loader; the one-time lens sequence plus hero orb settle is the load moment",
+      "microinteraction_density": "low"
+    },
+    "brand_voice_in_ui": {
+      "tone": "plain, specific, first person",
+      "formality": "professional but conversational",
+      "cta_style": "direct imperative (Download resume, Email me) plus a friendly invitation in the contact headline",
+      "empty_state_approach": "hide what is missing (resume buttons hide while resume.pdf is absent)",
+      "error_tone": "n/a"
+    }
+  },
+  "visual_effects": {
+    "overview": {
+      "effect_intensity": "moderate",
+      "performance_tier": "lightweight",
+      "fallback_strategy": "reduce to CSS: no backdrop-filter support gets a more opaque panel (rgba(14,20,40,0.88) dark / 80% white light); prefers-reduced-motion removes the lens pass, the orb settle, lifts and scales, and makes colour changes instant.",
+      "primary_technology": "CSS only"
+    },
+    "background_effects": {
+      "type": "mesh-gradient",
+      "description": "Six large blurred circles (filter: blur(70px)) placed down the page behind the glass, in sky, violet and teal.",
+      "technology": "CSS (absolutely positioned divs with filter blur)",
+      "params": {
+        "color_palette": [
+          "rgba(56,189,248,0.42)",
+          "rgba(139,92,246,0.40)",
+          "rgba(45,212,191,0.32)"
+        ],
+        "speed": "static after a one-time 1600ms settle of the two hero orbs; no continuous drift (performance behind backdrop-filter, WCAG 2.2.2)",
+        "density": "6 orbs per page, 420-640px each",
+        "opacity": "0.32-0.45",
+        "blend_mode": "normal"
+      }
+    },
+    "particle_systems": {
+      "enabled": false,
+      "type": "none",
+      "description": "not used",
+      "technology": "none",
+      "params": {
+        "count": 0,
+        "shape": "none",
+        "size_range": "none",
+        "movement_pattern": "none",
+        "color_behavior": "none",
+        "interaction": "none",
+        "spawn_area": "none"
+      }
+    },
+    "3d_elements": {
+      "enabled": false,
+      "type": "none",
+      "description": "not used",
+      "technology": "none",
+      "params": {
+        "renderer": "none",
+        "lighting": "none",
+        "camera": "none",
+        "materials": "none",
+        "geometry": "none",
+        "post_processing": [],
+        "interaction_model": "none"
+      }
+    },
+    "shader_effects": {
+      "enabled": false,
+      "type": "none",
+      "description": "not used; the glass is CSS backdrop-filter, not a refraction shader",
+      "technology": "none",
+      "params": {
+        "uniforms": "none",
+        "vertex_manipulation": "none",
+        "fragment_output": "none",
+        "noise_type": "none",
+        "distortion": "none"
+      }
+    },
+    "scroll_effects": {
+      "parallax": {
+        "enabled": false,
+        "layers": "0",
+        "depth_range": "none",
+        "speed_curve": "none"
+      },
+      "scroll_triggered_animations": {
+        "enabled": false,
+        "trigger_points": "none",
+        "animation_type": "none",
+        "scrub_behavior": "none"
+      },
+      "scroll_morphing": {
+        "enabled": false,
+        "description": "not used"
+      }
+    },
+    "text_effects": {
+      "type": "none",
+      "description": "Text never animates; the lens animates over it. No gradient text.",
+      "technology": "none",
+      "params": {
+        "split_strategy": "none",
+        "animation_per_unit": "none",
+        "stagger": "none",
+        "effect_style": "none"
+      }
+    },
+    "cursor_effects": {
+      "enabled": false,
+      "type": "none",
+      "description": "not used",
+      "params": {
+        "shape": "default",
+        "size": "default",
+        "blend_mode": "normal",
+        "trail": "none",
+        "interaction_zone": "none"
+      }
+    },
+    "image_effects": {
+      "type": "none",
+      "description": "no images",
+      "technology": "none",
+      "params": {
+        "filter_pipeline": "none",
+        "hover_transform": "none",
+        "reveal_animation": "none",
+        "distortion_type": "none"
+      }
+    },
+    "glassmorphism_neumorphism": {
+      "enabled": true,
+      "style": "glass",
+      "params": {
+        "blur_radius": "24px (range 8-40px), with saturate(170%)",
+        "transparency": "dark: navy rgba(14,20,40,0.42); light: 62% white; 7% / 75% white for hover, chips and pills",
+        "border_treatment": "1px gradient edge via masked ::before: rgba(255,255,255,0.45) at 0% and 100%, clear from 38% to 62% (light: 0.95)",
+        "shadow_type": "soft diffused drop shadow plus a top sheen ::after, linear-gradient(170deg, rgba(255,255,255,0.07), transparent 30%)",
+        "light_source_angle": "top-left, about 145deg"
+      }
+    },
+    "canvas_drawings": {
+      "enabled": false,
+      "type": "none",
+      "description": "not used",
+      "technology": "none",
+      "params": {
+        "draw_method": "none",
+        "animation_loop": "none",
+        "color_scheme": "none",
+        "responsiveness": "none",
+        "interaction": "none"
+      }
+    },
+    "svg_animations": {
+      "enabled": false,
+      "type": "none",
+      "description": "not used",
+      "params": {
+        "animation_method": "none",
+        "path_morphing": "none",
+        "stroke_animation": "none",
+        "filter_effects": "none"
+      }
+    },
+    "composite_notes": "The signature is ONE locator lens that travels through the three hero targets (see design_system.motion): a 1.5px accent border with a faint accent wash and saturate(180%) only (no blur, which smeared the text beneath). Its tag shows the real Playwright locator, drawn from a data attribute by CSS so it is not page text, and tests/test_site.py runs each locator in strict mode. Glass depends on something behind it: keep orbs behind every panel, or a panel reads as flat grey. backdrop-filter on many large panels costs GPU time on low-end phones; the page keeps it to about 13 blurred panels, never nested and no animated blur. Contrast must be measured on the composited result (glass over the brightest orb), not on the ground alone."
+  }
+}
